@@ -1,0 +1,112 @@
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+
+
+   
+    public class Percolation
+{
+    private int number;
+    private int gridSize;
+    private int topNode;
+    private int bottomNode;
+    private int numberOfOpenSites;
+    private WeightedQuickUnionUF open;
+    private WeightedQuickUnionUF full;
+    private boolean[] openSites;
+    
+    
+    public Percolation(int n){
+        
+       if (n <= 0) throw new IllegalArgumentException("The size must be greater than 0");
+       number = n;
+       gridSize = n * n;
+       topNode = gridSize;
+       bottomNode = gridSize +1 ;
+       full = new WeightedQuickUnionUF(gridSize + 2);
+       open = new WeightedQuickUnionUF(gridSize + 1);
+       numberOfOpenSites = 0;
+       openSites = new boolean[gridSize];
+       
+        }    
+    public void open(int i, int j){
+        if (!boundCheck(i , j)) throw new IndexOutOfBoundsException("The size must be greater than 0");
+        if (isOpen(i,j)) return;
+        openSites[twoDto1D(i, j)] = true;
+        connected(i,j);
+        numberOfOpenSites++;
+    }
+    public boolean isOpen(int row, int col) { // is the site (row, col) open?
+        if(!boundCheck(row, col)) throw new IndexOutOfBoundsException("Invaild index");
+        int index = twoDto1D(row, col);
+        return openSites[index] == true;
+    }
+
+    public boolean isFull(int i,int j){
+        if(!boundCheck(i, j)) throw new IndexOutOfBoundsException("Invaild index");
+        return open.connected((twoDto1D(i, j)), topNode);
+    }
+    public boolean percolates(){
+        return full.connected(topNode, bottomNode);
+    }
+  
+        private int twoDto1D(int i, int j) {        // Convert from 2D to 1D      
+        return number * i + j;
+        }
+       
+        private void connected(int i, int j) { 
+        // check if the sites are connect  to each other and 
+        //the top and the bottom
+        int site = twoDto1D(i, j);
+       
+   
+        if(i == 0) { //connect the open sites in the first row to the top node
+            full.union(topNode, site);
+            open.union(topNode,  site);
+        }
+        if(i == number - 1) { //connect the open sites in the last row to the bottom node
+            full.union(bottomNode, site);
+        }
+
+        if(j > 0) { 
+            if (isOpen(i, j - 1)) {
+                //connect the open site to its open left site
+                full.union(twoDto1D(i, j - 1), site);
+                open.union(twoDto1D(i, j - 1), site);
+            }
+        }
+        if(j < (number - 1)) {
+            if (isOpen(i, j + 1)) {
+                //connect the open site to its open right site
+                full.union(twoDto1D(i, j + 1), site);
+                open.union(twoDto1D(i, j + 1), site);
+            }
+        }
+        if(i > 0) {
+            if (isOpen(i - 1, j)) {
+                //connect the open site to its open top site
+                full.union(twoDto1D(i - 1, j), site);
+                open.union(twoDto1D(i - 1, j), site);
+            }
+        }
+        if(i < (number - 1)){
+            if ( isOpen(i + 1, j)) {
+                //connect the open site to its open bottom site
+                full.union(twoDto1D(i + 1, j), site);
+                open.union(twoDto1D(i + 1, j), site);  
+           }
+        }
+    }
+        
+    public int numberOfOpenSites() {
+        return numberOfOpenSites;
+    }
+    
+    private boolean boundCheck (int i, int j) { //check the bounds of the grid
+        if((i < 0 || i >= number)){ 
+            return false;
+        }
+        if((j < 0 || j >= number)){ 
+            return false;
+        }
+        return true;
+    }
+}
