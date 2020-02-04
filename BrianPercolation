@@ -18,11 +18,11 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
         
        if (n <= 0) throw new IllegalArgumentException("The size must be greater than 0");
        number = n;
-       gridSize = n^2;
+       gridSize = n * n;
        topNode = gridSize;
        bottomNode = gridSize +1 ;
-       full = new WeightedQuickUnionUF((n^2+2);
-       open = new WeightedQuickUnionUF((n^2+2);
+       full = new WeightedQuickUnionUF((n * n + 2);
+       open = new WeightedQuickUnionUF((n * n + 1);
        numberOfOpenSites = 0;
        openSites = new boolean[gridSize];
        
